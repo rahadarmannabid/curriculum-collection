@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Research Survey</title>
+    <style>
+        /* Container styles */
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: start;
+            padding: 20px 10px; /* Reduced left and right padding */
+            max-width: 95%;
+            margin: auto;
+        }
+
+        /* Chart container styles */
+        .chart-container {
+            max-width: 70%;
+            flex: 0 0 70%;
+            background-color: #f8f8f8;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin-right: 20px;
+            padding: 20px 10px; /* Reduced left and right padding */
+            border: 1px solid #ccc;
+            overflow: auto;
+        }
+
+        /* Form container styles */
+        .form-container {
+            flex: 1;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        /* Input and button styles */
+        input[type=text] {
+            padding: 10px;
+            margin-bottom: 10px;
+            width: calc(100% - 22px);
+            box-sizing: border-box;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #4cae4c;
+        }
+
+        /* Plus button styles */
+        .plus-button {
+            padding: 10px 15px;
+            margin-top: 10px;
+            background-color: #337ab7;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .plus-button:hover {
+            background-color: #286090;
+        }
+
+        /* Animation for form submission */
+        @keyframes submitAnimation {
+            0% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-5px);
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        .form-submitted {
+            animation: submitAnimation 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+  <div class="container">
+      <div class="chart-container">
+          <!-- Chart SVG or other content goes here -->
+          <!-- Ensure you include your chart rendering script here -->
+          
+          <script src='https://cdn.plot.ly/plotly-2.27.0.min.js'></script>
+
+          <h1>Seasonal Crop Moisture Comparison</h1>
+    <div id='myDiv'></div>
+    
+    <script>
+        var x = ['day 1', 'day 1', 'day 1', 'day 1', 'day 1', 'day 1',
+                 'day 2', 'day 2', 'day 2', 'day 2', 'day 2', 'day 2'];
+
+        var trace1 = {
+            y: [0.2, 0.2, 0.6, 1.0, 0.5, 0.4, 0.2, 0.7, 0.9, 0.1, 0.5, 0.3],
+            x: x,
+            name: 'kale',
+            marker: {color: '#3D9970'},
+            type: 'box'
+        };
+
+        var trace2 = {
+            y: [0.6, 0.7, 0.3, 0.6, 0.0, 0.5, 0.7, 0.9, 0.5, 0.8, 0.7, 0.2],
+            x: x,
+            name: 'radishes',
+            marker: {color: '#FF4136'},
+            type: 'box'
+        };
+
+        var trace3 = {
+            y: [0.1, 0.3, 0.1, 0.9, 0.6, 0.6, 0.9, 1.0, 0.3, 0.6, 0.8, 0.5],
+            x: x,
+            name: 'carrots',
+            marker: {color: '#FF851B'},
+            type: 'box'
+        };
+
+        var data = [trace1, trace2, trace3];
+
+        var layout = {
+            yaxis: {
+                title: 'normalized moisture',
+                zeroline: false
+            },
+            boxmode: 'group'
+        };
+
+        Plotly.newPlot('myDiv', data, layout);
+    </script>
+    
+      </div>
+      <div class="form-container">
+          <h1>User Database</h1>
+          <div id="dynamicInputContainer">
+            <input type="text" placeholder="Topic-1" class="user-input">
+            <input type="text" placeholder="Topic-2" class="user-input">
+          </div>
+          <button class="plus-button" onclick="addInputField()">+</button>
+          <button onclick="writeDataAndNavigate()">Submit</button>
+          <button onclick="goBack()">Back</button> <!-- Back button -->
+      </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/5.7.0/firebase.js"></script>
+  <script>
+      // Initialize Firebase
+    const config = {
+    apiKey: "AIzaSyC9mxJS6kjrM0zVeBmdPkIzxPax7iSqpMQ",
+    authDomain: "test-form-449b0.firebaseapp.com",
+    databaseURL: "https://test-form-449b0-default-rtdb.firebaseio.com",
+    projectId: "test-form-449b0",
+    storageBucket: "test-form-449b0.appspot.com",
+    messagingSenderId: "495927310785",
+    appId: "1:495927310785:web:70e7da8a61b7c4c4985740",
+    measurementId: "G-CVN4DWKMDE"
+  };
+      firebase.initializeApp(config);
+
+      function writeDataAndNavigate() {
+          const inputs = document.querySelectorAll('.user-input');
+          const userData = {};
+          inputs.forEach(input => {
+              userData[input.placeholder] = input.value;
+          });
+
+          const dbRef = firebase.database().ref('Users');
+          dbRef.push(userData).then(() => {
+              // Data submitted successfully
+              // Navigate to the next page
+              window.location.href = 'testpage-3.html';
+          }).catch((error) => {
+              console.error('Error writing to database:', error);
+          });
+      }
+
+      function addInputField() {
+          const container = document.getElementById('dynamicInputContainer');
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.className = 'user-input';
+          input.placeholder = 'Topic ' + (container.children.length + 1);
+          container.appendChild(input);
+      }
+
+      function goBack() {
+          // Navigate to the previous page
+          window.location.href = 'testpage-1.html';
+      }
+  </script>
+</body>
+</html>

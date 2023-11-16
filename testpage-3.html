@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Research Survey</title>
+    <style>
+        /* Container styles */
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: start;
+            padding: 20px 10px; /* Reduced left and right padding */
+            max-width: 95%;
+            margin: auto;
+        }
+
+        /* Chart container styles */
+        .chart-container {
+            max-width: 70%;
+            flex: 0 0 70%;
+            background-color: #f8f8f8;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin-right: 20px;
+            padding: 20px 10px; /* Reduced left and right padding */
+            border: 1px solid #ccc;
+            overflow: auto;
+        }
+
+        /* Form container styles */
+        .form-container {
+            flex: 1;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        /* Input and button styles */
+        input[type=text] {
+            padding: 10px;
+            margin-bottom: 10px;
+            width: calc(100% - 22px);
+            box-sizing: border-box;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #4cae4c;
+        }
+
+        /* Plus button styles */
+        .plus-button {
+            padding: 10px 15px;
+            margin-top: 10px;
+            background-color: #337ab7;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .plus-button:hover {
+            background-color: #286090;
+        }
+
+        /* Animation for form submission */
+        @keyframes submitAnimation {
+            0% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-5px);
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        .form-submitted {
+            animation: submitAnimation 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+  <div class="container">
+      <div class="chart-container">
+          <!-- Chart SVG or other content goes here -->
+          <!-- Ensure you include your chart rendering script here -->
+          <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+          <script type="text/javascript">
+            google.charts.load('current', {'packages':['corechart']});
+            google.charts.setOnLoadCallback(drawSeriesChart);
+      
+          function drawSeriesChart() {
+      
+            var data = google.visualization.arrayToDataTable([
+              ['ID', 'Life Expectancy', 'Fertility Rate', 'Region',     'Population'],
+              ['CAN',    80.66,              1.67,      'North America',  33739900],
+              ['DEU',    79.84,              1.36,      'Europe',         81902307],
+              ['DNK',    78.6,               1.84,      'Europe',         5523095],
+              ['EGY',    72.73,              2.78,      'Middle East',    79716203],
+              ['GBR',    80.05,              2,         'Europe',         61801570],
+              ['IRN',    72.49,              1.7,       'Middle East',    73137148],
+              ['IRQ',    68.09,              4.77,      'Middle East',    31090763],
+              ['ISR',    81.55,              2.96,      'Middle East',    7485600],
+              ['RUS',    68.6,               1.54,      'Europe',         141850000],
+              ['USA',    78.09,              2.05,      'North America',  307007000]
+            ]);
+      
+            var options = {
+              title: 'Fertility rate vs life expectancy in selected countries (2010).' +
+                ' X=Life Expectancy, Y=Fertility, Bubble size=Population, Bubble color=Region',
+              hAxis: {title: 'Life Expectancy'},
+              vAxis: {title: 'Fertility Rate'},
+              bubble: {textStyle: {fontSize: 11}}
+            };
+      
+            var chart = new google.visualization.BubbleChart(document.getElementById('series_chart_div'));
+            chart.draw(data, options);
+          }
+          </script>
+
+<div id="series_chart_div" style="width: 900px; height: 500px;"></div>
+          
+          
+      </div>
+      <div class="form-container">
+          <h1>User Database</h1>
+          <div id="dynamicInputContainer">
+            <input type="text" placeholder="Topic-1" class="user-input">
+            <input type="text" placeholder="Topic-2" class="user-input">
+          </div>
+          <button class="plus-button" onclick="addInputField()">+</button>
+          <button onclick="writeDataAndNavigate()">Submit</button>
+          <button onclick="goBack()">Back</button> <!-- Back button -->
+      </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/5.7.0/firebase.js"></script>
+  <script>
+      // Initialize Firebase
+    const config = {
+    apiKey: "AIzaSyC9mxJS6kjrM0zVeBmdPkIzxPax7iSqpMQ",
+    authDomain: "test-form-449b0.firebaseapp.com",
+    databaseURL: "https://test-form-449b0-default-rtdb.firebaseio.com",
+    projectId: "test-form-449b0",
+    storageBucket: "test-form-449b0.appspot.com",
+    messagingSenderId: "495927310785",
+    appId: "1:495927310785:web:70e7da8a61b7c4c4985740",
+    measurementId: "G-CVN4DWKMDE"
+  };
+      firebase.initializeApp(config);
+
+      function writeDataAndNavigate() {
+          const inputs = document.querySelectorAll('.user-input');
+          const userData = {};
+          inputs.forEach(input => {
+              userData[input.placeholder] = input.value;
+          });
+
+          const dbRef = firebase.database().ref('Users');
+          dbRef.push(userData).then(() => {
+              // Data submitted successfully
+              // Navigate to the next page
+              window.location.href = 'testpage-4.html';
+          }).catch((error) => {
+              console.error('Error writing to database:', error);
+          });
+      }
+
+      function addInputField() {
+          const container = document.getElementById('dynamicInputContainer');
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.className = 'user-input';
+          input.placeholder = 'Topic ' + (container.children.length + 1);
+          container.appendChild(input);
+      }
+
+      function goBack() {
+          // Navigate to the previous page
+          window.location.href = 'testpage-2.html';
+      }
+  </script>
+</body>
+</html>
